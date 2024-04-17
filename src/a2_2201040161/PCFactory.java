@@ -1,11 +1,7 @@
 package a2_2201040161;
 
-import utils.DOpt;
-import utils.OptType;
-
 public class PCFactory {
     private static PCFactory instance;
-    @DOpt(type = OptType.Constructor)
     private PCFactory(){
 
     }

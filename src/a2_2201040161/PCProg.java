@@ -1,129 +1,114 @@
 package a2_2201040161;
 
-import static utils.TextIO.getln;
-import static utils.TextIO.putln;
-import static utils.TextIO.writeFile;
-import static utils.TextIO.writeStandardOutput;
-
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 import java.util.Vector;
-import utils.DomainConstraint;
-import utils.NotPossibleException;
-import utils.TextIO;
 
+import utils.NotPossibleException;
 /**
- * @overview PCProg is a program that captures data about PC objects and
- *           displays a report about them on the console.
- * 
- * @attributes objs Set<PC>
- * 
- * @object A typical PCProg is {c1,...,cn} where c1,...,cn are pcs
- * 
- * @abstract_properties mutable(objs)=true /\ optional(objs)=false
- * 
- * @author dmle
+ * A program that captures data about PC objects and displays
+ * a report about them on the console.
  */
 public class PCProg {
 	private static final Object YES = "Y";
-	@DomainConstraint(mutable = true, optional = false)
 	private Set<PC> objs;
 
 	/**
-	 * @effects initialise this to have an empty set of PCs
+	 * Initialise this to have an empty set of PCs
 	 */
 	public PCProg() {
 		objs = new Set<>();
 	}
 
 	/**
-	 * @effects if objs is not empty display to the standard console a text-based
-	 *          tabular report on objs return this report else display nothing and
-	 *          return null
+	 * If <tt>objs</tt> is not empty, displays a text-based tabular
+	 * report on <tt>objs</tt> to the standard console.
+	 * Displays nothing if <tt>objs</tt> is empty.
+	 *
+	 * @return this report if <tt>objs</tt> is not empty or <tt>null</tt> otherwise.
 	 */
 	public String displayReport() {
-		if (objs.size() > 0) {
+		if (!objs.isEmpty()) {
 			Vector<PC> pcs = objs.getElements();
 			PCReport reportObj = new PCReport();
-			return reportObj.displayReport(pcs.toArray(new PC[pcs.size()]));
+			return reportObj.displayReport(pcs.toArray(new PC[0]));
 		} else {
 			return null;
 		}
 	}
 
-	/**
-	 * @effects save report to a file pcs.txt in the same directory as the program's
-	 */
-	public void saveReport(String report) {
-		String fileName = "pcs.txt";
-		writeFile(fileName);
-		putln(report);
-		writeStandardOutput();
-	}
-
 	public void createObjects(){
 		PCFactory pf = PCFactory.getInstance();
+		Scanner sc = new Scanner(System.in);
 		boolean con = true;
 		while(con) {
-			TextIO.put("Please type in the model of the PC: ");
-			String model = TextIO.getlnString();
-			TextIO.put("Please type in the PC's year of manufacture: ");
-			int year = TextIO.getlnInt();
-			TextIO.put("Please type in the name of the manufacturer: ");
-			String manufacturer = TextIO.getlnString();
+			System.out.print("Please type in the model of the PC: ");
+			String model = sc.nextLine();
+			System.out.print("Please type in the PC's year of manufacture: ");
+			int year = sc.nextInt();
+			sc.nextLine();
+			System.out.print("Please type in the name of the manufacturer: ");
+			String manufacturer = sc.nextLine();
 			Set<String> components = new Set<>();
 			boolean comps = true;
 			while (comps) {
-				TextIO.put("Please type in the name of a component (press Enter to stop): ");
-				String a = TextIO.getlnString();
+				System.out.print("Please type in the name of a component (press Enter to stop): ");
+				String a = sc.nextLine();
 				if(a.isEmpty()){
 					comps=false;
 				}else{
-					components.insert(a);
+					components.insert(a.trim());
 				}
 			}
 			objs.insert(pf.createPC(model,year,manufacturer,components));
-			TextIO.put("Do you want to continue adding another PC? [Y/N]");
-			String yn = TextIO.getlnString();
+			System.out.print("Do you want to continue adding another PC? [Y/N]");
+			String yn = sc.nextLine();
 			if(yn.equals("no")||yn.equals("N")||yn.equals("No")||yn.equals("NO")||yn.equals("n")){
 				con=false;
 			}
 		}
 	}
-
-	public Vector<PC> getObjects(){
-		return objs.getElements();
+	/**
+	 * Saves report to a file <tt>pcs.txt</tt> in the program's working directory.
+	 */
+	public void saveReport(String report) {
+		String fileName = "pcs.txt";
+		try (PrintWriter pw = new PrintWriter(fileName)) {
+			pw.println(report);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
-	 * The run method
-	 * 
-	 * @effects initialise an instance of PCProg create objects from data entered by
-	 *          the user display a report on the objects prompt user to save report
-	 *          to file if user answers "Y" save report else end
+	 * Initializes an instance of <tt>PCProg</tt>.
+	 * Create objects from data entered by the user.
+	 * Display a report on the objects.
+	 * Prompt user to save report to file. If user answers "Y", save report.
+	 * Otherwise, end program.
 	 */
 	public static void main(String[] args) {
-		//
+		Scanner sc = new Scanner(System.in);
 		PCProg prog = new PCProg();
-
-		// create objects
 		try {
+			// create objects
 			prog.createObjects();
 			// display report
 			String report = prog.displayReport();
 			System.out.println(report);
 			if (report != null) {
 				// prompt user to save report
-				putln("Save report to file? [Y/N]");
-				String toSave = getln();
-				if (toSave.equals("Y")||toSave.equals("y")) {
+				System.out.println("Save report to file? [Y/N]");
+				String toSave = sc.nextLine();
+				if (toSave.equals("Y")||toSave.equals("y")){
 					prog.saveReport(report);
-					putln("report saved");
+					System.out.println("report saved");
 				}
 			}
-
 		} catch (NotPossibleException e) {
 			System.err.printf("%s: %s%n", e, e.getMessage());
 		}
-		putln("~END~");
+		System.out.println("~END~");
 	}
-
 }
