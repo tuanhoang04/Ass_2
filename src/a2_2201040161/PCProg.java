@@ -69,6 +69,11 @@ public class PCProg {
 			}
 		}
 	}
+
+	public Vector<PC> getObjects(){
+		return objs.getElements();
+	}
+
 	/**
 	 * Saves report to a file <tt>pcs.txt</tt> in the program's working directory.
 	 */
