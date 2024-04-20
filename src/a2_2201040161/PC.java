@@ -32,13 +32,13 @@ public class PC {
 
 
     public boolean validateModel(String model){
-        return model.length()<=20;
+        return model.length()<=20&&!model.isEmpty();
     }
     public boolean validateYear(int year){
         return year>=1984;
     }
     public boolean validateManufacturer(String manufacturer){
-        return manufacturer.length()<=15;
+        return manufacturer.length()<=15&&!manufacturer.isEmpty();
     }
 
 
@@ -81,7 +81,11 @@ public class PC {
 
     @Override
     public String toString(){
-        return "PC<" + model + ", " + year + ", " + manufacturer + ", " + comps + '>';
+        if (getComps()==null){
+            return String.format("%20s%6d%15s %-53s", this.getModel(), this.getYear(), this.getManufacturer(), "[]");
+        }
+        String components = this.getComps().toString().length() > 53 ? this.getComps().toString().substring(0, 49) + "...]" : this.getComps().toString();
+        return String.format("%20s%6d%15s %-53s", this.getModel(), this.getYear(), this.getManufacturer(), components);
     }
 
     @Override
