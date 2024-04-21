@@ -43,8 +43,8 @@ public class PC {
 
 
     public void setModel(String model){
-        if(validateModel(model))
-            this.model = model;
+        if(validateModel(model.trim()))
+            this.model = model.trim();
         else
             throw new NotPossibleException("Invalid model");
     }
@@ -55,8 +55,8 @@ public class PC {
             throw new NotPossibleException("Invalid year");
     }
     public void setManufacturer(String manufacturer){
-        if(validateManufacturer(manufacturer))
-            this.manufacturer = manufacturer;
+        if(validateManufacturer(manufacturer.trim()))
+            this.manufacturer = manufacturer.trim();
         else
             throw new NotPossibleException("Invalid manufacturer");
     }
