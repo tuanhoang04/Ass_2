@@ -12,7 +12,7 @@ public class PC {
 
 
     public PC(String model,int year,String manufacturer,Set<String>comps){
-        if(validateModel(model))
+        if(validateModel(model.trim()))
             this.model=model.trim();
         else
             throw new NotPossibleException("Invalid model");
@@ -22,7 +22,7 @@ public class PC {
         else
             throw new NotPossibleException("Invalid year");
 
-        if(validateModel(manufacturer))
+        if(validateModel(manufacturer.trim()))
             this.manufacturer=manufacturer.trim();
         else
             throw new NotPossibleException("Invalid manufacturer");
